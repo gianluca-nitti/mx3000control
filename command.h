@@ -1,0 +1,14 @@
+#ifndef _COMMAND_H
+#define _COMMAND_H
+#include <hidapi/hidapi.h>
+
+struct command {
+	char* cmd;
+	char* description;
+	int (*execute)(int, char**, hid_device*);
+};
+
+struct command get_command_raw();
+struct command get_command_setrgbled();
+
+#endif
