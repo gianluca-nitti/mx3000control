@@ -8,7 +8,7 @@ LIBS=$(shell pkg-config --libs $(HIDAPI))
 
 all: mx3000control
 
-mx3000control: main.o command_raw.o
+mx3000control: main.o encoding.o command_raw.o command_setrgbled.o
 	$(CC) $^ $(LIBS) -o $@
 
 %.o: %.c

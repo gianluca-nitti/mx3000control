@@ -2,19 +2,23 @@
 #include <stdio.h>
 #include <hidapi/hidapi.h>
 #include "command.h"
+#include "encoding.h"
 
 static int execute(int argc, char** argv, hid_device* dev) {
-	if (argc != 9) {
-		fwprintf(stderr, L"Please specify 8 arguments (8 bytes of feature report to send in hex format).\n");
+	if (argc != 4) {
+		fwprintf(stderr, L"Please specify 3 arguments (R, G and B values in decimal).\n");
 		return 1;
 	}
+	unsigned char r, g, b;
+	r = (char) atoi(argv[1]);
+	g = (char) atoi(argv[2]);
+	b = (char) atoi(argv[3]);
 
-	/* send feature report specified on command line (8 bytes, 1 for each argument, in hex) */
-	unsigned char data[9];
-	data[0] = 0;
-	for (int i = 1; i < 9; i++) {
-		data[i] = (char) strtol(argv[i], NULL, 16);
-	}
+	wprintf(L"Setting color to R: %d, G: %d, B: %d\n", r, g, b);
+
+	unsigned char data[] = {0, 0x7, 0xA, g, r, b, 0, 0, 0};
+	encode(data);
+
 	wprintf(L"Feature report to send: %X %X %X %X %X %X %X %X %X\n", data[0], data[1],
 			data[2], data[3], data[4], data[5], data[6], data[7], data[8]);
 
@@ -27,10 +31,10 @@ static int execute(int argc, char** argv, hid_device* dev) {
 	return 0;
 }
 
-struct command get_command_raw() {
+struct command get_command_setrgbled() {
 	struct command result = {
-		"raw",
-		"Send raw bytes from command line (in hex format) as HID feature report",
+		"setrgbled",
+		"Set RGB led color. Requires 3 numbers as arguments (R, G and B values in decimal).",
 		&execute
 	};
 	return result;
