@@ -6,7 +6,7 @@ HIDAPI=hidapi-hidraw
 CFLAGS+=-Wall -pedantic-errors $(shell pkg-config --cflags $(HIDAPI))
 LIBS=$(shell pkg-config --libs $(HIDAPI))
 
-COMMANDS=command_raw.o command_setledcolor.o command_setledpulsation.o
+COMMANDS=command_raw.o command_setledcolor.o command_setledpulsation.o command_setledintensity.o
 
 all: mx3000control
 

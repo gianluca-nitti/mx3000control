@@ -15,8 +15,8 @@ int find_command(const char* cmd, const struct command* commands, const int num_
 }
 
 int main(int argc, char** argv) {
-	const struct command commands[] = {get_command_raw(), get_command_setledcolor(), get_command_setledpulsation()};
-	const int num_commands = 3;
+	const struct command commands[] = {get_command_raw(), get_command_setledcolor(), get_command_setledpulsation(), get_command_setledintensity()};
+	const int num_commands = 4;
 
 	if (argc < 2) {
 		fwprintf(stderr, L"Please specify a command as 1st argument.\n"); //TODO: implement help command
