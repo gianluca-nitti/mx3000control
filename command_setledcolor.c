@@ -31,9 +31,9 @@ static int execute(int argc, char** argv, hid_device* dev) {
 	return 0;
 }
 
-struct command get_command_setrgbled() {
+struct command get_command_setledcolor() {
 	struct command result = {
-		"setrgbled",
+		"setledcolor",
 		"Set RGB led color. Requires 3 numbers as arguments (R, G and B values in decimal).",
 		&execute
 	};

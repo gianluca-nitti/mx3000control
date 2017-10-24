@@ -9,6 +9,7 @@ struct command {
 };
 
 struct command get_command_raw();
-struct command get_command_setrgbled();
+struct command get_command_setledcolor();
+struct command get_command_setledpulsation();
 
 #endif
