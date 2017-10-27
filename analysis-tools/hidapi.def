@@ -1,0 +1,22 @@
+EXPORTS
+CloseUSB=__E__0__ @1
+DecodeSecrecy_V11=__E__1__ @2
+EncodeSecrecy_V11=__E__2__ @3
+Get2Version=__E__3__ @4
+GetFeature=__E__4__ @5
+GetInformation=__E__5__ @6
+GetPCTimer=__E__6__ @7
+GetSN_Code=__E__7__ @8
+InitUSB=__E__8__ @9
+LoadPCtimer=__E__9__ @10
+OpenUSB=__E__10__ @11
+ReadUSB=__E__11__ @12
+SavePCtimerWithInDLL=__E__12__ @13
+SavePctimer=__E__13__ @14
+SetFeature=__E__14__ @15
+SetReport=__E__15__ @16
+SetSN_Code=__E__16__ @17
+WriteUSB=__E__17__ @18
+_OpenHIDDevice=__E__18__ @19
+change_PCTimer=__E__19__ @20
+setBufferLength=__E__20__ @21

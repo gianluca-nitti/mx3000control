@@ -1,0 +1,2 @@
+CL.EXE /O2 /GL /I "." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_WINDLL" /FD /EHsc /MT /Fo".\\hidapi.obj" /Fd".\\vc80.pdb" /W3 /nologo /c /Wp64 /TP /errorReport:prompt hidapi.cpp
+LINK.EXE /OUT:"HIDApi.dll" /INCREMENTAL:NO /NOLOGO /DLL /MANIFEST /DEF:"hidapi.def" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /MACHINE:X86 /ERRORREPORT:PROMPT hidapi.obj kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib
