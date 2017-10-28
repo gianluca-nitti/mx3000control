@@ -2,13 +2,15 @@
 #include <stdio.h>
 #pragma pack(1)
 
+#define LOG_PATH "C:\\Users\\Test\\Desktop\\MOUSE-LOG.txt"
+
 
 HINSTANCE hLThis = 0;
 HINSTANCE hL = 0;
 FARPROC p[21] = {0};
 
 unsigned char buf[9];
-char* str;
+FILE* logFile;
 int ebxBkp;
 
 BOOL WINAPI DllMain(HINSTANCE hInst,DWORD reason,LPVOID)
@@ -43,10 +45,13 @@ BOOL WINAPI DllMain(HINSTANCE hInst,DWORD reason,LPVOID)
 
 		OutputDebugString("Hook library loaded!");
 
+		logFile = fopen(LOG_PATH, "w");		
+
 		}
 	if (reason == DLL_PROCESS_DETACH)
 		{
 		FreeLibrary(hL);
+		fclose(logFile);
 		}
 
 	return 1;
@@ -71,10 +76,8 @@ extern "C" __declspec(naked) void __stdcall __E__1__()
 	}
 
 extern "C" void printBuf() {
-	str = (char*)malloc(1000);
-	sprintf(str, "sendreport %02X %02X %02X %02X %02X %02X %02X %02X %02X", buf[0], buf[1], buf[2], buf[3], buf[4], buf[5], buf[6], buf[7], buf[8]);
-	OutputDebugString(str);
-	free(str);
+	fprintf(logFile, "%02X %02X %02X %02X %02X %02X %02X %02X %02X\n", buf[0], buf[1], buf[2], buf[3], buf[4], buf[5], buf[6], buf[7], buf[8]);
+	fflush(logFile);
 }
 
 // EncodeSecrecy_V11
