@@ -12,5 +12,6 @@ struct command get_command_raw();
 struct command get_command_setledcolor();
 struct command get_command_setledpulsation();
 struct command get_command_setledintensity();
+struct command get_command_setdpi();
 
 #endif
