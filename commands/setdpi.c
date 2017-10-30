@@ -5,20 +5,12 @@
 #include "../command.h"
 #include "../util.h"
 
+static const char* options[] = {"600", "1200", "2000", "3000", "4800", "6400", "8200"};
+static const unsigned char command_byte = 0x9;
+static const char* setting_name = "sensor DPI";
+
 static int execute(int argc, char** argv, hid_device* dev) {
-	if (argc != 2) {
-		fwprintf(stderr, L"Please specify 1 argument.\n");
-		return 1;
-	}
-
-	const char* alternatives[] = {"600", "1200", "2000", "3000", "4800", "6400", "8200"};
-	int value = get_index_or_atoi(argv[1], alternatives, 7, "Setting sensor DPI to value");
-	if (value == -1) {
-		return 1;
-	}
-
-	unsigned char data[] = {0, 0x7, 0x9, (unsigned char) value, 0, 0, 0, 0, 0};
-	return encode_and_send_feature_report(dev, data);
+	return execute_simple_command(argc, argv, dev, options, command_byte, setting_name);
 }
 
 struct command get_command_setdpi() {

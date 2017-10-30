@@ -23,7 +23,7 @@ int encode_and_send_feature_report(hid_device* dev, unsigned char* data) {
 	return send_feature_report(dev, data);
 }
 
-int get_index(char* str, const char** options, int n_options) {
+int get_index(const char* str, const char** options, int n_options) {
 	for(int i = 0; i < n_options; i++) {
 		if (strcmp(str, options[i]) == 0) {
 			return i;
@@ -32,7 +32,8 @@ int get_index(char* str, const char** options, int n_options) {
 	return -1;
 }
 
-int get_index_or_atoi(char* str, const char** options, int n_options, char* message_prefix) {
+int get_index_or_atoi(const char* str, const char** options, const char* setting_name) {
+	int n_options = sizeof(options) / sizeof(char*);
 	int index = get_index(str, options, n_options) + 1;
 	if (index == 0) {
 		index = atoi(str);
@@ -41,6 +42,22 @@ int get_index_or_atoi(char* str, const char** options, int n_options, char* mess
 		fwprintf(stderr, L"Unrecognized value \"%s\".\n", str);
 		return -1;
 	}
-	wprintf(L"%s %d (%s).\n", message_prefix, index, options[index - 1]);
+	wprintf(L"Setting %s to value %d (%s).\n", setting_name, index, options[index - 1]);
 	return index;
 }
+
+int execute_simple_command(int argc, char** argv, hid_device* dev, const char** options, unsigned char command_byte, const char* setting_name) {
+	if (argc != 2) {
+		fwprintf(stderr, L"Please specify 1 argument.\n");
+		return 1;
+	}
+
+	int value = get_index_or_atoi(argv[1], options, setting_name);
+	if (value == -1) {
+		return 1;
+	}
+
+	unsigned char data[] = {0, 0x7, command_byte, (unsigned char) value, 0, 0, 0, 0, 0};
+	return encode_and_send_feature_report(dev, data);
+}
+
