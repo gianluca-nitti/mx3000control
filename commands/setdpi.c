@@ -6,11 +6,12 @@
 #include "../util.h"
 
 static const char* options[] = {"600", "1200", "2000", "3000", "4800", "6400", "8200"};
+static const int n_options = 7;
 static const unsigned char command_byte = 0x9;
 static const char* setting_name = "sensor DPI";
 
 static int execute(int argc, char** argv, hid_device* dev) {
-	return execute_simple_command(argc, argv, dev, options, command_byte, setting_name);
+	return execute_simple_command(argc, argv, dev, options, n_options, command_byte, setting_name);
 }
 
 struct command get_command_setdpi() {

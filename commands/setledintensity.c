@@ -6,11 +6,12 @@
 #include "../util.h"
 
 static const char* options[] = {"off", "low", "middle", "high"};
+static const int n_options = 4;
 static const unsigned char command_byte = 0xC;
 static const char* setting_name = "led light intensity";
 
 static int execute(int argc, char** argv, hid_device* dev) {
-	return execute_simple_command(argc, argv, dev, options, command_byte, setting_name);
+	return execute_simple_command(argc, argv, dev, options, n_options, command_byte, setting_name);
 }
 
 struct command get_command_setledintensity() {

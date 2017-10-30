@@ -6,11 +6,12 @@
 #include "../util.h"
 
 static const char* options[] = {"steady", "slow", "middle", "fast"};
+static const int n_options = 4;
 static const unsigned char command_byte = 0xB;
 static const char* setting_name = "led pulsation effect";
 
 static int execute(int argc, char** argv, hid_device* dev) {
-	return execute_simple_command(argc, argv, dev, options, command_byte, setting_name);
+	return execute_simple_command(argc, argv, dev, options, n_options, command_byte, setting_name);
 }
 
 struct command get_command_setledpulsation() {
