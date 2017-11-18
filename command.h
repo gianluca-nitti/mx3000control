@@ -14,5 +14,7 @@ struct command get_command_setledpulsation();
 struct command get_command_setledintensity();
 struct command get_command_setdpi();
 struct command get_command_setsensivity();
+struct command get_command_test_keys();
+struct command get_command_encode();
 
 #endif

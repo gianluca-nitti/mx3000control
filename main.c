@@ -15,8 +15,10 @@ int find_command(const char* cmd, const struct command* commands, const int num_
 }
 
 int main(int argc, char** argv) {
-	const struct command commands[] = {get_command_raw(), get_command_setledcolor(), get_command_setledpulsation(), get_command_setledintensity(), get_command_setdpi(), get_command_setsensivity()};
-	const int num_commands = 6;
+	const struct command commands[] = {get_command_raw(), get_command_setledcolor(), get_command_setledpulsation(),
+		get_command_setledintensity(), get_command_setdpi(), get_command_setsensivity(),
+		get_command_test_keys(), get_command_encode()};
+	const int num_commands = 8;
 
 	if (argc < 2) {
 		fwprintf(stderr, L"Please specify a command as 1st argument.\n"); //TODO: implement help command
@@ -52,5 +54,5 @@ int main(int argc, char** argv) {
 	}
 	hid_free_enumeration(device_list);
 	hid_exit();
-	return 0;
+	return 0; //TODO: return command result as exit code
 }
