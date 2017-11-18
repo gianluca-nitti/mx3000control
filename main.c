@@ -15,9 +15,9 @@ int find_command(const char* cmd, const struct command* commands, const int num_
 }
 
 int main(int argc, char** argv) {
-	const struct command commands[] = {get_command_raw(), get_command_setledcolor(), get_command_setledpulsation(),
-		get_command_setledintensity(), get_command_setdpi(), get_command_setsensivity(),
-		get_command_test_keys(), get_command_encode()};
+	const struct command commands[] = {get_command_encode(), get_command_raw(), get_command_setledcolor(),
+		get_command_setledpulsation(), get_command_setledintensity(), get_command_setdpi(),
+		get_command_setsensivity(), get_command_test_keys()};
 	const int num_commands = 8;
 
 	if (argc < 2) {
@@ -26,7 +26,10 @@ int main(int argc, char** argv) {
 	}
 
 	int cmd_index = find_command(argv[1], commands, num_commands);
-	//commands[cmd_index].execute(argc - 1, argv + 1, NULL); //TODO remove
+
+	if (cmd_index == 0) { // "encode" command does not need the handle to a device
+		return commands[cmd_index].execute(argc - 1, argv + 1, NULL);
+	}
 
 	int status = hid_init();
 	if (status != 0) {

@@ -11,10 +11,11 @@ void encode(unsigned char* buf) {
 	for (int i = 0; i < 7; i++) {
 		buf[i + 2] += key[i];
 	}
-	buf[8] = (buf[2] >> 5) | (buf[8] << 3);
+	unsigned char tmp = buf[2];
 	for (int i = 2; i < 8; i++) {
 		buf[i] = (buf[i + 1] >> 5) | (buf[i] << 3);
 	}
+	buf[8] = (buf[8] << 3) | (tmp >> 5);
 	// TODO: disassembled code has a loop apparently XORing the buffer with zeroes, which appears doing nothing
 	swap(buf, 2, 5);
 	swap(buf, 4, 8);
