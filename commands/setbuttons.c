@@ -8,6 +8,8 @@
 #include "../encoding.h"
 #include "../keymap.h"
 
+static char* defaults[] = {"click", "menu", "middle-button", "backward", "forward", "dpi-up", "dpi-down", "led-color-switch"};
+
 static void configure_keys(hid_device* dev, key_config_t config1, key_config_t config2) {
 	unsigned char data[] = {0, config1.byteA, config1.byteB, config1.byteC, config1.byteD,
 		config2.byteA, config2.byteB, config2.byteC, config2.byteD};
@@ -29,6 +31,16 @@ static key_config_t get_key_config(char* keyName) {
 
 static int execute(int argc, char** argv, hid_device* dev) {
 
+	char** values;
+	if (argc == 1) {
+		values = defaults;
+	} else if (argc == 9) {
+		values = argv + 1;
+	} else {
+		fwprintf(stderr, L"Please specify 8 arguments (one string for each mouse button) or no arguments (to reset to defaults).\n");
+		return 1;
+	}
+
 	unsigned char data1[] = {0, 0x07, 0x3A, 0x2B, 0xB7, 0xCF, 0x33, 0xA7, 0xB2}; // 0x07 0x03 ...
 	hid_send_feature_report(dev, data1, 9);
 	usleep(10000);
@@ -39,11 +51,11 @@ static int execute(int argc, char** argv, hid_device* dev) {
 	hid_send_feature_report(dev, data3, 9);
 	usleep(10000);
 
-	configure_keys(dev, get_key_config("click"), get_key_config("menu"));
-	configure_keys(dev, get_key_config("middle-button"), get_key_config("backward"));
-	configure_keys(dev, get_key_config("forward"), get_key_config("disable"));
-	configure_keys(dev, get_key_config("disable"), get_key_config("dpi-up"));
-	configure_keys(dev, get_key_config("dpi-down"), get_key_config("led-color-switch"));
+	configure_keys(dev, get_key_config(values[0]), get_key_config(values[1]));
+	configure_keys(dev, get_key_config(values[2]), get_key_config(values[3]));
+	configure_keys(dev, get_key_config(values[4]), get_key_config("disable"));
+	configure_keys(dev, get_key_config("disable"), get_key_config(values[5]));
+	configure_keys(dev, get_key_config(values[6]), get_key_config(values[7]));
 
 	unsigned char data[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 	encode(data);
@@ -65,10 +77,11 @@ static int execute(int argc, char** argv, hid_device* dev) {
 	return 0;
 }
 
-struct command get_command_test_keys() {
+struct command get_command_setbuttons() {
 	struct command result = {
-		"test_keys",
-		"",
+		"setbuttons",
+		// TODO: explain better and/or explicitly list the available button functions
+		"Configure mappings of the mouse buttons. Can be used with 8 string arguments - one for each button, see keymap.h for the allowed values - or without any argument (resets to the default button configuration).",
 		&execute
 	};
 	return result;

@@ -17,7 +17,7 @@ int find_command(const char* cmd, const struct command* commands, const int num_
 int main(int argc, char** argv) {
 	const struct command commands[] = {get_command_encode(), get_command_raw(), get_command_setledcolor(),
 		get_command_setledpulsation(), get_command_setledintensity(), get_command_setdpi(),
-		get_command_setsensivity(), get_command_test_keys()};
+		get_command_setsensivity(), get_command_setbuttons()};
 	const int num_commands = 8;
 
 	if (argc < 2) {
