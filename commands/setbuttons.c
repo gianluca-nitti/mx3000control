@@ -19,7 +19,6 @@ static void configure_keys(hid_device* dev, key_config_t config1, key_config_t c
 }
 
 static key_config_t get_key_config(char* keyName) {
-	static int numKeys = sizeof(keys) / sizeof(keys[0]);
 	for (int i = 0; i < numKeys; i++) {
 		if (strcmp(keyName, keys[i].name) == 0) {
 			return keys[i];
@@ -86,8 +85,7 @@ static int execute(int argc, char** argv, hid_device* dev) {
 struct command get_command_setbuttons() {
 	struct command result = {
 		"setbuttons",
-		// TODO: explain better and/or explicitly list the available button functions
-		"Configure mappings of the mouse buttons. Can be used with 8 string arguments - one for each button, see keymap.h for the allowed values - or without any argument (resets to the default button configuration).",
+		"Configure mappings of the mouse buttons. Can be used with 8 string arguments - one for each button - or without any argument (resets to the default button configuration). Use \"mx3000control help buttons\" to see a list of the available button functions.",
 		&execute
 	};
 	return result;

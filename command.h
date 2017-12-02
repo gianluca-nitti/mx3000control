@@ -8,6 +8,8 @@ struct command {
 	int (*execute)(int, char**, hid_device*);
 };
 
+void init_help();
+struct command get_command_help();
 struct command get_command_raw();
 struct command get_command_setledcolor();
 struct command get_command_setledpulsation();
