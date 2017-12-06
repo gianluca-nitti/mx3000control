@@ -19,6 +19,11 @@ static void configure_keys(hid_device* dev, key_config_t config1, key_config_t c
 }
 
 static key_config_t get_key_config(char* keyName) {
+	if (strncmp(keyName, "key-", 3) == 0) {
+		unsigned char scancode = (unsigned char) strtol(keyName + 4, NULL, 16);
+		key_config_t result = {keyName, 0x00, scancode, 0x00, 0x00};
+		return result;
+	}
 	for (int i = 0; i < numKeys; i++) {
 		if (strcmp(keyName, keys[i].name) == 0) {
 			return keys[i];
@@ -87,7 +92,7 @@ static int execute(int argc, char** argv, hid_device* dev) {
 command_t get_command_setbuttons() {
 	command_t result = {
 		"setbuttons",
-		"Configure mappings of the mouse buttons. Can be used with 8 string arguments - one for each button - or without any argument (resets to the default button configuration). Use \"mx3000control help buttons\" to see a list of the available button functions.",
+		"Configure mappings of the mouse buttons. Can be used with 8 string arguments - one for each button - or without any argument (resets to the default button configuration). You can assign to each button a mouse function, chosen from a list (run \"mx3000control help buttons\" to see the list of the available button functions) or a keyboard key, using a string in the format \"key-<scancode>\" where <scancode> is the scancode of the desired key, in hexadecimal.",
 		&execute
 	};
 	return result;
