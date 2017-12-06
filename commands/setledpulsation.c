@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "../command.h"
 #include "../util.h"
 
@@ -14,8 +14,8 @@ static int execute(int argc, char** argv, hid_device* dev) {
 	return execute_simple_command(argc, argv, dev, options, n_options, command_byte, setting_name);
 }
 
-struct command get_command_setledpulsation() {
-	struct command result = {
+command_t get_command_setledpulsation() {
+	command_t result = {
 		"setledpulsation",
 		"Set RGB led pulsation effect. Requires one string or integer argument: \"steady\" or 1, \"slow\" or 2, \"middle\" or 3, \"fast\" or 4.",
 		&execute

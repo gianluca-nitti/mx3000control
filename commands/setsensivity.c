@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "../command.h"
 #include "../util.h"
 
@@ -17,12 +17,12 @@ static int execute(int argc, char** argv, hid_device* dev) {
 		fwprintf(stderr, L"Values for X and Y sensivity must be in the 1 to 10 range (inclusive).\n");
 		return 1;
 	}
-	unsigned char data[] = {0, 0x7, 0x12, (unsigned char) y, (unsigned char) x, 0, 0, 0, 0};
+	unsigned char data[] = {0x00, 0x07, 0x12, (unsigned char) y, (unsigned char) x, 0x00, 0x00, 0x00, 0x00};
 	return encode_and_send_feature_report(dev, data);
 }
 
-struct command get_command_setsensivity() {
-	struct command result = {
+command_t get_command_setsensivity() {
+	command_t result = {
 		"setsensivity",
 		"Set horizontal and vertical sensivity. Requires two integer arguments between 1 and 10, the first one is X and the second one is Y.",
 		&execute

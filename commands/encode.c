@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "../command.h"
 #include "../util.h"
 #include "../encoding.h"
@@ -22,8 +22,8 @@ static int execute(int argc, char** argv, hid_device* dev) {
 	return 0;
 }
 
-struct command get_command_encode() {
-	struct command result = {
+command_t get_command_encode() {
+	command_t result = {
 		"encode",
 		"Encodes the specified hex command. Doesn't actually send anything to the mouse, useful for debug/development purposes only.",
 		&execute

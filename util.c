@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "encoding.h"
 #include "util.h"
 
@@ -56,7 +56,7 @@ int execute_simple_command(int argc, char** argv, hid_device* dev, const char** 
 		return 1;
 	}
 
-	unsigned char data[] = {0, 0x7, command_byte, (unsigned char) value, 0, 0, 0, 0, 0};
+	unsigned char data[] = {0x00, 0x07, command_byte, (unsigned char) value, 0x00, 0x00, 0x00, 0x00, 0x00};
 	return encode_and_send_feature_report(dev, data);
 }
 

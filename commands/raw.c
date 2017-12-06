@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "../command.h"
 #include "../util.h"
 
@@ -32,8 +32,8 @@ static int execute(int argc, char** argv, hid_device* dev) {
 	}
 }
 
-struct command get_command_raw() {
-	struct command result = {
+command_t get_command_raw() {
+	command_t result = {
 		"raw",
 		"Send raw bytes from command line (in hex format) as HID output report or feature report",
 		&execute

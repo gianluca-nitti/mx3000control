@@ -1,10 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
+#include "mx3000.h"
 #include "command.h"
 
-int find_command(const char* cmd, const struct command* commands, const int num_commands) {
+int find_command(const char* cmd, const command_t* commands, const int num_commands) {
 	for(int i = 0; i < num_commands; i++) {
 		if (strcmp(cmd, commands[i].cmd) == 0) {
 			return i;
@@ -15,7 +16,7 @@ int find_command(const char* cmd, const struct command* commands, const int num_
 }
 
 int main(int argc, char** argv) {
-	const struct command commands[] = {get_command_help(), get_command_encode(), get_command_raw(),
+	const command_t commands[] = {get_command_help(), get_command_encode(), get_command_raw(),
 		get_command_setledcolor(), get_command_setledpulsation(), get_command_setledintensity(),
 		get_command_setdpi(), get_command_setsensivity(), get_command_setbuttons()};
 	const int num_commands = sizeof(commands) / sizeof(commands[0]);
@@ -39,7 +40,7 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 
-	struct hid_device_info* device_list = hid_enumerate(0x04d9, 0xa067);
+	struct hid_device_info* device_list = hid_enumerate(VENDOR_ID, PRODUCT_ID);
 	struct hid_device_info* dev_info = device_list;
 	while (dev_info != NULL) {
 		wprintf(L"Found device 0x%X 0x%X Serial: \"%S\" Manufacturer: \"%S\" Device: \"%S\"\n",

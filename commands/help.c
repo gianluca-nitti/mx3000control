@@ -1,15 +1,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "../command.h"
 #include "../util.h"
 #include "../keymap.h"
 
-static struct command* commands;
+static command_t* commands;
 static int num_commands;
 
-void init_help(struct command* _commands, int _num_commands) {
+void init_help(command_t* _commands, int _num_commands) {
 	commands = _commands;
 	num_commands = _num_commands;
 }
@@ -32,8 +32,8 @@ static int execute(int argc, char** argv, hid_device* dev) {
 	return 1;
 }
 
-struct command get_command_help() {
-	struct command result = {
+command_t get_command_help() {
+	command_t result = {
 		"help",
 		"Show this help message.",
 		&execute
