@@ -12,10 +12,11 @@ int send_feature_report(hid_device* dev, unsigned char* data) {
 	int status = hid_send_feature_report(dev, data, 9);
 	if (status == -1) {
 		wprintf(L"Failed to send feature report: \"%S\".\n", hid_error(dev));
+		return 1;
 	} else {
 		wprintf(L"Feature report sent.\n");
+		return 0;
 	}
-	return status;
 }
 
 int encode_and_send_feature_report(hid_device* dev, unsigned char* data) {

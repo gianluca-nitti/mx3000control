@@ -42,6 +42,7 @@ int main(int argc, char** argv) {
 
 	struct hid_device_info* device_list = hid_enumerate(VENDOR_ID, PRODUCT_ID);
 	struct hid_device_info* dev_info = device_list;
+	int result = -1;
 	while (dev_info != NULL) {
 		wprintf(L"Found device 0x%X 0x%X Serial: \"%S\" Manufacturer: \"%S\" Device: \"%S\"\n",
 				dev_info->vendor_id, dev_info->product_id,
@@ -50,15 +51,20 @@ int main(int argc, char** argv) {
 
 		hid_device* dev = hid_open_path(dev_info->path);
 		if (dev == NULL) {
-			wprintf(L"Failed to open device at path %s.\n", dev_info->path);
+			fwprintf(stderr, L"Failed to open device at path %s.\n", dev_info->path);
 		} else {
-			commands[cmd_index].execute(argc - 1, argv + 1, dev);
+			result = commands[cmd_index].execute(argc - 1, argv + 1, dev);
 			hid_close(dev);
+			break;
 		}
 
 		dev_info = dev_info->next;
 	}
 	hid_free_enumeration(device_list);
 	hid_exit();
-	return 0; //TODO: return command result as exit code
+	if (result == -1) {
+		fwprintf(stderr, L"No devices found.\n");
+		result = 2;
+	}
+	return result;
 }

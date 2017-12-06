@@ -79,6 +79,8 @@ static int execute(int argc, char** argv, hid_device* dev) {
 		hid_write(dev, data, 9);
 	}
 
+	wprintf(L"Wrote button configuration.\n");
+
 	return 0;
 }
 

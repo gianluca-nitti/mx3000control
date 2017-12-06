@@ -35,7 +35,7 @@ static int execute(int argc, char** argv, hid_device* dev) {
 command_t get_command_help() {
 	command_t result = {
 		"help",
-		"Show this help message.",
+		"If invoked without arguments, shows this help message. If the string \"buttons\" is supplied as argument, shows a list of the available functions that can be assigned to mouse buttons.",
 		&execute
 	};
 	return result;
