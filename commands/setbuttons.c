@@ -7,8 +7,11 @@
 #include "../command.h"
 #include "../encoding.h"
 #include "../keymap.h"
+#include "../macro.h"
 
 static char* defaults[] = {"click", "menu", "middle-button", "backward", "forward", "dpi-up", "dpi-down", "led-color-switch"};
+static int macro_index = 0;
+static macro_t macros[16] = {{0}};
 
 static void configure_keys(hid_device* dev, key_config_t config1, key_config_t config2) {
 	unsigned char data[] = {0x00, config1.byteA, config1.byteB, config1.byteC, config1.byteD,
@@ -19,9 +22,21 @@ static void configure_keys(hid_device* dev, key_config_t config1, key_config_t c
 }
 
 static key_config_t get_key_config(char* keyName) {
-	if (strncmp(keyName, "key-", 3) == 0) {
+	if (strncmp(keyName, "key-", 4) == 0) {
 		unsigned char scancode = (unsigned char) strtol(keyName + 4, NULL, 16);
 		key_config_t result = {keyName, 0x00, scancode, 0x00, 0x00};
+		return result;
+	}
+	if (strncmp(keyName, "macro-", 6) == 0) {
+		macro_t m = parse_macro(keyName + 6);
+		if (!m.parse_ok) {
+			fwprintf(stderr, L"Warning: failed to parse macro \"%s\", setting button to \"%s\" instead\n",
+					keyName, keys[0].name);
+			return keys[0];
+		}
+		key_config_t result = {keyName, 0x53, 0x00, macro_index, m.length};
+		wprintf(L"%02X %02X %02X %02X\n", result.byteA, result.byteB, result.byteC, result.byteD); // TODO remove
+		macros[macro_index++] = m;
 		return result;
 	}
 	for (int i = 0; i < numKeys; i++) {
@@ -44,6 +59,8 @@ static int execute(int argc, char** argv, hid_device* dev) {
 		fwprintf(stderr, L"Please specify 8 arguments (one string for each mouse button) or no arguments (to reset to defaults).\n");
 		return 1;
 	}
+
+	macro_index = 0;
 
 	// The following byte arrays are the pre-encoded version of the byte sequence in the comment on the previous line.
 	// These values never change, so there is no reason to encode at runtime.
@@ -79,9 +96,9 @@ static int execute(int argc, char** argv, hid_device* dev) {
 	unsigned char data4[] = {0x00, 0x07, 0x6A, 0x2B, 0xB7, 0xDF, 0x33, 0xA7, 0xB2};
 	hid_send_feature_report(dev, data4, 9);
 
-	for(int i = 0; i < 192; i++) {
+	for(int i = 0; i < 16; i++) {
 		usleep(DELAY);
-		hid_write(dev, data, 9);
+		send_macro(dev, macros[i]);
 	}
 
 	wprintf(L"Wrote button configuration.\n");
