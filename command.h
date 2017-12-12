@@ -8,7 +8,7 @@ typedef struct {
 	int (*execute)(int, char**, hid_device*);
 } command_t ;
 
-void init_help();
+void init_help(char*, command_t*, int);
 command_t get_command_help();
 command_t get_command_raw();
 command_t get_command_setledcolor();

@@ -1,27 +1,46 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <string.h>
 #include <hidapi.h>
+#include "mx3000.h"
+#include "verbose.h"
 #include "encoding.h"
 #include "util.h"
 
-int send_feature_report(hid_device* dev, unsigned char* data) {
-	wprintf(L"Feature report to send: %02X %02X %02X %02X %02X %02X %02X %02X %02X\n", data[0], data[1],
-			data[2], data[3], data[4], data[5], data[6], data[7], data[8]);
+extern verbose_mode verbosity;
 
-	int status = hid_send_feature_report(dev, data, 9);
+static void print_report(char* prefix, report_type t, unsigned char* d) {
+	wprintf(L"%s HID %s report: %02X %02X %02X %02X %02X %02X %02X %02X %02X\n",
+			prefix, t == FEATURE_REPORT ? "feature" : "output",
+			d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8]);
+}
+
+int send_report(hid_device* dev, unsigned char* data, report_type t) {
+	if (verbosity == PRINT_ALL_REPORTS) {
+		print_report("Sending", t, data);
+	}
+	int status;
+	if (t == FEATURE_REPORT) {
+		status = hid_send_feature_report(dev, data, 9);
+	} else {
+		status = hid_write(dev, data, 9);
+	}
+	usleep(DELAY);
 	if (status == -1) {
-		wprintf(L"Failed to send feature report: \"%S\".\n", hid_error(dev));
+		fwprintf(stderr, L"Failed to send report: \"%S\".\n", hid_error(dev));
 		return 1;
 	} else {
-		wprintf(L"Feature report sent.\n");
 		return 0;
 	}
 }
 
-int encode_and_send_feature_report(hid_device* dev, unsigned char* data) {
+int encode_and_send_report(hid_device* dev, unsigned char* data, report_type t) {
+	if (verbosity != SILENT) {
+		print_report("Encoding", t, data);
+	}
 	encode(data);
-	return send_feature_report(dev, data);
+	return send_report(dev, data, t);
 }
 
 int get_index(const char* str, const char** options, int n_options) {
@@ -42,7 +61,9 @@ int get_index_or_atoi(const char* str, const char** options, int n_options, cons
 		fwprintf(stderr, L"Unrecognized value \"%s\".\n", str);
 		return -1;
 	}
-	wprintf(L"Setting %s to value %d (%s).\n", setting_name, index, options[index - 1]);
+	if (verbosity != SILENT) {
+		wprintf(L"Setting %s to value %d (%s).\n", setting_name, index, options[index - 1]);
+	}
 	return index;
 }
 
@@ -58,6 +79,6 @@ int execute_simple_command(int argc, char** argv, hid_device* dev, const char** 
 	}
 
 	unsigned char data[] = {0x00, 0x07, command_byte, (unsigned char) value, 0x00, 0x00, 0x00, 0x00, 0x00};
-	return encode_and_send_feature_report(dev, data);
+	return encode_and_send_report(dev, data, FEATURE_REPORT);
 }
 

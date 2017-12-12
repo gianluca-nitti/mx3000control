@@ -3,10 +3,10 @@
 #include <unistd.h>
 #include <string.h>
 #include <hidapi.h>
-#include "../mx3000.h"
 #include "../command.h"
 #include "../encoding.h"
 #include "../keymap.h"
+#include "../util.h"
 #include "../macro.h"
 
 static char* defaults[] = {"click", "menu", "middle-button", "backward", "forward", "dpi-up", "dpi-down", "led-color-switch"};
@@ -16,9 +16,7 @@ static macro_t macros[16] = {{0}};
 static void configure_keys(hid_device* dev, key_config_t config1, key_config_t config2) {
 	unsigned char data[] = {0x00, config1.byteA, config1.byteB, config1.byteC, config1.byteD,
 		config2.byteA, config2.byteB, config2.byteC, config2.byteD};
-	encode(data);
-	hid_write(dev, data, 9);
-	usleep(DELAY);
+	encode_and_send_report(dev, data, OUTPUT_REPORT);
 }
 
 static key_config_t get_key_config(char* keyName) {
@@ -35,7 +33,6 @@ static key_config_t get_key_config(char* keyName) {
 			return keys[0];
 		}
 		key_config_t result = {keyName, 0x53, 0x00, macro_index, m.length};
-		wprintf(L"%02X %02X %02X %02X\n", result.byteA, result.byteB, result.byteC, result.byteD); // TODO remove
 		macros[macro_index++] = m;
 		return result;
 	}
@@ -66,16 +63,13 @@ static int execute(int argc, char** argv, hid_device* dev) {
 	// These values never change, so there is no reason to encode at runtime.
 	// {0x00, 0x07, 0x03, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00}
 	unsigned char data1[] = {0x00, 0x07, 0x3A, 0x2B, 0xB7, 0xCF, 0x33, 0xA7, 0xB2};
-	hid_send_feature_report(dev, data1, 9);
-	usleep(DELAY);
+	send_report(dev, data1, FEATURE_REPORT);
 	// {0x00, 0x07, 0x02, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00}
 	unsigned char data2[] = {0x00, 0x07, 0x3A, 0x2B, 0xB7, 0xC7, 0x33, 0xA7, 0xB2};
-	hid_send_feature_report(dev, data2, 9);
-	usleep(DELAY);
+	send_report(dev, data2, FEATURE_REPORT);
 	// {0x00, 0x07, 0x04, 0x01, 0x40, 0x00, 0x00, 0x00, 0x00}
 	unsigned char data3[] = {0x00, 0x07, 0x3A, 0x2D, 0xB7, 0xD7, 0x33, 0xA7, 0xB2};
-	hid_send_feature_report(dev, data3, 9);
-	usleep(DELAY);
+	send_report(dev, data3, FEATURE_REPORT);
 
 	configure_keys(dev, get_key_config(values[0]), get_key_config(values[1]));
 	configure_keys(dev, get_key_config(values[2]), get_key_config(values[3]));
@@ -83,25 +77,19 @@ static int execute(int argc, char** argv, hid_device* dev) {
 	configure_keys(dev, get_key_config("disable"), get_key_config(values[5]));
 	configure_keys(dev, get_key_config(values[6]), get_key_config(values[7]));
 
-	unsigned char data[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-	encode(data);
-	hid_write(dev, data, 9);
-	usleep(DELAY);
-	hid_write(dev, data, 9);
-	usleep(DELAY);
-	hid_write(dev, data, 9);
+	// {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
+	unsigned char data[] = {0x00, 0x00, 0x3A, 0x23, 0xB7, 0xB7, 0x33, 0xA7, 0xB2};
+	send_report(dev, data, OUTPUT_REPORT);
+	send_report(dev, data, OUTPUT_REPORT);
+	send_report(dev, data, OUTPUT_REPORT);
 
-	usleep(DELAY);
 	// {0x00, 0x07, 0x05, 0x01, 0x00, 0x06, 0x00, 0x00, 0x00}
 	unsigned char data4[] = {0x00, 0x07, 0x6A, 0x2B, 0xB7, 0xDF, 0x33, 0xA7, 0xB2};
-	hid_send_feature_report(dev, data4, 9);
+	send_report(dev, data4, FEATURE_REPORT);
 
 	for(int i = 0; i < 16; i++) {
-		usleep(DELAY);
 		send_macro(dev, macros[i]);
 	}
-
-	wprintf(L"Wrote button configuration.\n");
 
 	return 0;
 }

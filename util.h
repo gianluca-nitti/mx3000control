@@ -1,10 +1,17 @@
 #ifndef _UTIL_H
 #define _UTIL_H
 
-int send_feature_report(hid_device* dev, unsigned char* data);
-int encode_and_send_feature_report(hid_device* dev, unsigned char* data);
-int get_index(const char* str, const char** options, int n_options);
-int get_index_or_atoi(const char* str, const char** options, int n_options, const char* setting_name);
-int execute_simple_command(int argc, char** argv, hid_device* dev, const char** options, int n_options, unsigned char command_byte, const char* setting_name);
+#include <hidapi.h>
+
+typedef enum {
+	FEATURE_REPORT,
+	OUTPUT_REPORT
+} report_type;
+
+int send_report(hid_device*, unsigned char*, report_type);
+int encode_and_send_report(hid_device*, unsigned char*, report_type);
+int get_index(const char*, const char**, int);
+int get_index_or_atoi(const char*, const char**, int, const char*);
+int execute_simple_command(int, char**, hid_device*, const char**, int, unsigned char, const char*);
 
 #endif

@@ -10,14 +10,12 @@ static int execute(int argc, char** argv, hid_device* dev) {
 		return 1;
 	}
 	unsigned char r, g, b;
-	r = (char) atoi(argv[1]);
-	g = (char) atoi(argv[2]);
-	b = (char) atoi(argv[3]);
-
-	wprintf(L"Setting color to R: %d, G: %d, B: %d\n", r, g, b);
+	r = (unsigned char) atoi(argv[1]);
+	g = (unsigned char) atoi(argv[2]);
+	b = (unsigned char) atoi(argv[3]);
 
 	unsigned char data[] = {0x00, 0x07, 0x0A, g, r, b, 0x00, 0x00, 0x00};
-	return encode_and_send_feature_report(dev, data);
+	return encode_and_send_report(dev, data, FEATURE_REPORT);
 }
 
 command_t get_command_setledcolor() {

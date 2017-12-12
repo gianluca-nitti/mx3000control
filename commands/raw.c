@@ -16,16 +16,9 @@ static int execute(int argc, char** argv, hid_device* dev) {
 		data[i] = (char) strtol(argv[i + 1], NULL, 16);
 	}
 	if (strcmp("feature", argv[1]) == 0) {
-		return send_feature_report(dev, data);
+		return send_report(dev, data, FEATURE_REPORT);
 	} else if (strcmp("output", argv[1]) == 0) {
-		int status = hid_write(dev, data, 9);
-		if (status != -1) {
-			wprintf(L"Output report sent.");
-			return 0;
-		} else {
-			wprintf(L"Failed to send output report: \"%S\".\n", hid_error(dev));
-			return 1;
-		}
+		return send_report(dev, data, OUTPUT_REPORT);
 	} else {
 		fwprintf(stderr, L"First argument to the \"raw\" command must be \"feature\" or \"output\".");
 		return 1;

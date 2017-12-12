@@ -18,7 +18,7 @@ static int execute(int argc, char** argv, hid_device* dev) {
 		return 1;
 	}
 	unsigned char data[] = {0x00, 0x07, 0x12, (unsigned char) y, (unsigned char) x, 0x00, 0x00, 0x00, 0x00};
-	return encode_and_send_feature_report(dev, data);
+	return encode_and_send_report(dev, data, FEATURE_REPORT);
 }
 
 command_t get_command_setsensivity() {
