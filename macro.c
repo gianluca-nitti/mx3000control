@@ -37,6 +37,10 @@ macro_t parse_macro(char* str) {
 	}
 	int key_index = 0;
 	while (*str != '\0') {
+		if (key_index >= MAX_MACRO_ENTRIES) {
+			fwprintf(stderr, L"Invalid macro: exceeded maximum number of keys\n");
+			return result;
+		}
 		if (key_index != 0) {
 			if (*str != '-') {
 				fwprintf(stderr, L"Failed to parse macro: expected dash before new key data\n");
@@ -84,7 +88,6 @@ macro_t parse_macro(char* str) {
 
 		str = newStr;
 		key_index++;
-		// TODO: ensure there are no more entries than the max allowed
 	}
 	result.parse_ok = 1;
 	result.length = 2 * (key_index + 1);

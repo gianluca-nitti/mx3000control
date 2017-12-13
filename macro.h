@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <hidapi.h>
 
+#define MAX_MACRO_ENTRIES 47
+
 typedef enum {
 	KEY_DOWN,
 	KEY_UP
@@ -19,7 +21,7 @@ typedef struct {
 	int parse_ok;
 	uint8_t length;
 	uint16_t repeat_count;
-	macro_entry_t keys[47];
+	macro_entry_t keys[MAX_MACRO_ENTRIES];
 } macro_t;
 
 macro_t parse_macro(char*);
