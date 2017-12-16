@@ -17,7 +17,7 @@ static int execute(int argc, char** argv, hid_device* dev) {
 command_t get_command_setdpi() {
 	command_t result = {
 		"setdpi",
-		"Set sensor DPI. Requires one argument: \"600\" or 1, \"1200\" or 2, \"2000\" or 3, \"3000\" or 4, \"4800\" or 5, \"6400\" or 7, \"8200\" or 8.",
+		"Set sensor DPI. Requires one argument: \"600\" or 1, \"1200\" or 2, \"2000\" or 3, \"3000\" or 4, \"4800\" or 5, \"6400\" or 6, \"8200\" or 7.",
 		&execute
 	};
 	return result;

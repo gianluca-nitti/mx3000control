@@ -28,7 +28,7 @@ static int execute(int argc, char** argv, hid_device* dev) {
 command_t get_command_raw() {
 	command_t result = {
 		"raw",
-		"Send raw bytes from command line (in hex format) as HID output report or feature report",
+		"Send raw bytes from command line (in hex format) as HID output report or feature report.",
 		&execute
 	};
 	return result;

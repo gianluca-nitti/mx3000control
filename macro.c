@@ -8,7 +8,7 @@
 #define STRLEN(s) (sizeof(s) / sizeof(s[0]) - 1)
 
 static const char repeat_prefix[] = "repeat-";
-static const char delay_prefix[] = "delay-";
+static const char delay_prefix[] = "-delay-";
 static const char keydown_prefix[] = "down";
 static const char keyup_prefix[] = "up";
 
@@ -48,25 +48,6 @@ macro_t parse_macro(char* str) {
 			}
 			str++;
 		}
-		if (strncmp(str, delay_prefix, STRLEN(delay_prefix)) == 0) {
-			str += STRLEN(delay_prefix);
-			char* newStr;
-			result.keys[key_index].delay = (uint8_t) strtol(str, &newStr, 10);
-			if (newStr == str) {
-				fwprintf(stderr, L"Failed to parse key delay in macro\n");
-				return result;
-			}
-			if ((result.keys[key_index].delay & 0x80) != 0) { //msb must be zero (range is 0-127)
-				fwprintf(stderr, L"Macro key delay is out of range\n");
-				return result;
-			}
-			str = newStr;
-			if (*str != '-') {
-				fwprintf(stderr, L"Failed to parse macro: expected dash after delay value\n");
-				return result;
-			}
-			str++;
-		}
 
 		if (strncmp(str, keydown_prefix, STRLEN(keydown_prefix)) == 0) {
 			str += STRLEN(keydown_prefix);
@@ -87,6 +68,22 @@ macro_t parse_macro(char* str) {
 		}
 
 		str = newStr;
+
+		if (strncmp(str, delay_prefix, STRLEN(delay_prefix)) == 0) {
+			str += STRLEN(delay_prefix);
+			char* newStr;
+			result.keys[key_index].delay = (uint8_t) strtol(str, &newStr, 10);
+			if (newStr == str) {
+				fwprintf(stderr, L"Failed to parse key delay in macro\n");
+				return result;
+			}
+			if ((result.keys[key_index].delay & 0x80) != 0) { //msb must be zero (range is 0-127)
+				fwprintf(stderr, L"Macro key delay is out of range\n");
+				return result;
+			}
+			str = newStr;
+		}
+
 		key_index++;
 	}
 	result.parse_ok = 1;

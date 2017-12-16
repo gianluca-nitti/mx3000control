@@ -9,7 +9,7 @@
 #include "../util.h"
 #include "../macro.h"
 
-static char* defaults[] = {"click", "menu", "middle-button", "backward", "forward", "dpi-up", "dpi-down", "led-color-switch"};
+static char* defaults[] = {"click", "menu", "middle-button", "forward", "backward", "dpi-up", "dpi-down", "led-color-switch"};
 static int macro_index = 0;
 static macro_t macros[16] = {{0}};
 
@@ -97,7 +97,11 @@ static int execute(int argc, char** argv, hid_device* dev) {
 command_t get_command_setbuttons() {
 	command_t result = {
 		"setbuttons",
-		"Configure mappings of the mouse buttons. Can be used with 8 string arguments - one for each button - or without any argument (resets to the default button configuration). You can assign to each button a mouse function, chosen from a list (run \"mx3000control help buttons\" to see the list of the available button functions) or a keyboard key, using a string in the format \"key-<scancode>\" where <scancode> is the scancode of the desired key, in hexadecimal.",
+		"Configure mappings of the mouse buttons. Can be used with 8 string arguments - one for each button - or without any argument (resets to the default button configuration).\n"
+			"\t\tYou can assign to each button one of the following:\n"
+			"\t\t- a mouse function, chosen from a list (run \"mx3000control help buttons\" to see the list of the available button functions), or\n"
+			"\t\t- a keyboard key, using a string in the format \"key-<scancode>\" where <scancode> is the scancode of the desired key in hexadecimal, or\n"
+			"\t\t- a macro; the syntax is \"macro-[repeat-<repeat count>-][(down | up)<scancode>-[delay-<delay value>]]...\"",
 		&execute
 	};
 	return result;
