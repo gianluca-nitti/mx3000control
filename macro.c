@@ -9,8 +9,9 @@
 
 static const char repeat_prefix[] = "repeat-";
 static const char delay_prefix[] = "-delay-";
-static const char keydown_prefix[] = "down";
-static const char keyup_prefix[] = "up";
+static const char delay_ms_suffix[] = "ms";
+static const char keydown_prefix[] = "down-";
+static const char keyup_prefix[] = "up-";
 
 macro_t parse_macro(char* str) {
 	macro_t result = {0};
@@ -72,16 +73,26 @@ macro_t parse_macro(char* str) {
 		if (strncmp(str, delay_prefix, STRLEN(delay_prefix)) == 0) {
 			str += STRLEN(delay_prefix);
 			char* newStr;
-			result.keys[key_index].delay = (uint8_t) strtol(str, &newStr, 10);
+			int delay = strtol(str, &newStr, 10);
 			if (newStr == str) {
 				fwprintf(stderr, L"Failed to parse key delay in macro\n");
 				return result;
+			}
+			str = newStr;
+			if (strncmp(str, delay_ms_suffix, STRLEN(delay_ms_suffix)) == 0) {
+				str += STRLEN(delay_ms_suffix);
+				if ((delay < 0) || (delay > 6350) || (delay % 50 != 0)) {
+					fwprintf(stderr, L"Key delay in macro expressed in milliseconds must be in the range 0-6350 (inclusive) and a multiple of 50\n");
+					return result;
+				}
+				result.keys[key_index].delay = (uint8_t) (delay / 50);
+			} else {
+				result.keys[key_index].delay = (uint8_t) delay;
 			}
 			if ((result.keys[key_index].delay & 0x80) != 0) { //msb must be zero (range is 0-127)
 				fwprintf(stderr, L"Macro key delay is out of range\n");
 				return result;
 			}
-			str = newStr;
 		}
 
 		key_index++;
