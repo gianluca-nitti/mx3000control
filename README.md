@@ -5,5 +5,4 @@
 * Currently supported features are:
 	* Setting DPI and X/Y sensivity
 	* Setting RGB LED color, light intensity and pulsation effect
-	* Configuring the mouse buttons by assigning them mouse functions (like left/right click, back/forward, DPI up/down, etc) or single keyboard keys (you need to know the scancode; a list can be found, for example, [here](https://gist.github.com/MightyPork/6da26e382a7ad91b5496ee55fdc73db2))
-* Macros are not supported yet.
+	* Configuring the mouse buttons by assigning them mouse functions (like left/right click, back/forward, DPI up/down, etc), single keyboard keys (you need to know the scancode; a list can be found, for example, [here](https://gist.github.com/MightyPork/6da26e382a7ad91b5496ee55fdc73db2)) or macros (same features available in the original Windows software; a macro can send keyboard key up/down events and wait delays)
