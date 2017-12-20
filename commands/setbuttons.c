@@ -8,6 +8,7 @@
 #include "../keymap.h"
 #include "../util.h"
 #include "../macro.h"
+#include "../default_macros.h"
 
 static char* defaults[] = {"click", "menu", "middle-button", "forward", "backward", "dpi-up", "dpi-down", "led-color-switch"};
 static int macro_index = 0;
@@ -17,6 +18,12 @@ static void configure_keys(hid_device* dev, key_config_t config1, key_config_t c
 	unsigned char data[] = {0x00, config1.byteA, config1.byteB, config1.byteC, config1.byteD,
 		config2.byteA, config2.byteB, config2.byteC, config2.byteD};
 	encode_and_send_report(dev, data, OUTPUT_REPORT);
+}
+
+static key_config_t get_macro_key_config(macro_t m) {
+	key_config_t result = {"", 0x53, 0x00, macro_index, m.length};
+	macros[macro_index++] = m;
+	return result;
 }
 
 static key_config_t get_key_config(char* keyName) {
@@ -32,13 +39,16 @@ static key_config_t get_key_config(char* keyName) {
 					keyName, keys[0].name);
 			return keys[0];
 		}
-		key_config_t result = {keyName, 0x53, 0x00, macro_index, m.length};
-		macros[macro_index++] = m;
-		return result;
+		return get_macro_key_config(m);
 	}
 	for (int i = 0; i < numKeys; i++) {
 		if (strcmp(keyName, keys[i].name) == 0) {
 			return keys[i];
+		}
+	}
+	for (int i = 0; i < numDefaultMacros; i++) {
+		if (strcmp(keyName, default_macros[i].name) == 0) {
+			return get_macro_key_config(default_macros[i].macro);
 		}
 	}
 	fwprintf(stderr, L"Warning: unknown key \"%s\", setting to \"%s\" instead\n", keyName, keys[0].name);
