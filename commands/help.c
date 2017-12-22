@@ -4,7 +4,7 @@
 #include <hidapi.h>
 #include "../command.h"
 #include "../util.h"
-#include "../keymap.h"
+#include "../buttons_globals.h"
 
 static char* argv0;
 static command_t* commands;
@@ -29,7 +29,14 @@ static int execute(int argc, char** argv, hid_device* dev) {
 	} else if (argc == 2 && strcmp("buttons", argv[1]) == 0) {
 		wprintf(L"The following values can be used as arguments for the \"setbuttons\" command:\n");
 		for (int i = 0; i < numKeys; i++) {
-			wprintf(L"%s\n", keys[i]);
+			wprintf(L"%s\n", keys[i].name);
+		}
+		for (int i = 0; i < numDefaultMacros; i++) {
+			wprintf(L"%s", default_macros[i].name);
+			if (default_macros[i].description != NULL) {
+				wprintf(L" (%s)", default_macros[i].description);
+			}
+			wprintf(L"\n");
 		}
 		return 0;
 	}

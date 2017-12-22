@@ -10,7 +10,7 @@ COMMANDS=$(patsubst %.c, %.o, $(wildcard commands/*.c))
 
 all: mx3000control
 
-mx3000control: main.o encoding.o util.o keymap.o macro.o $(COMMANDS)
+mx3000control: main.o encoding.o util.o keymap.o macro.o default_macros.o $(COMMANDS)
 	$(CC) $^ $(LIBS) -o $@
 
 %.o: %.c

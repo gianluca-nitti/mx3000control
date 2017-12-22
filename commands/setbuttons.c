@@ -5,10 +5,9 @@
 #include <hidapi.h>
 #include "../command.h"
 #include "../encoding.h"
-#include "../keymap.h"
 #include "../util.h"
 #include "../macro.h"
-#include "../default_macros.h"
+#include "../buttons_globals.h"
 
 static char* defaults[] = {"click", "menu", "middle-button", "forward", "backward", "dpi-up", "dpi-down", "led-color-switch"};
 static int macro_index = 0;
@@ -109,9 +108,9 @@ command_t get_command_setbuttons() {
 		"setbuttons",
 		"Configure the mouse buttons. Can be used with 8 string arguments (one for each button) or without any argument (resets to the default button configuration).\n"
 			"\t\tYou can assign to each button one of the following:\n"
-			"\t\t- a mouse function, chosen from a list (run \"mx3000control help buttons\" to see the list of the available button functions), or\n"
+			"\t\t- a mouse function or default/built-in macro, chosen from a list (run \"mx3000control help buttons\" to see the list of the available button functions), or\n"
 			"\t\t- a keyboard key, using a string in the format \"key-<scancode>\" where <scancode> is the scancode of the desired key in hexadecimal, or\n"
-			"\t\t- a macro; the syntax is \"macro-[repeat-<repeat count>-][(down | up)-<scancode>-[delay-<delay value>[ms]]]...\".\n"
+			"\t\t- a custom macro; the syntax is \"macro-[repeat-<repeat count>-][(down | up)-<scancode>-[delay-<delay value>[ms]]]...\".\n"
 			"\t\t  A macro can contain up to 47 actions (an action is a key up/down event optionally followed by a delay); delays must be multiples of 50 milliseconds in the 0-6350 range;\n"
 			"\t\t  if a delay is not followed by \"ms\", it's interpreted according to the 7-bit representation used by the mouse, thus must be in the 0-127 range (where 127 maps to 6350ms).\n"
 			"\t\tHere are two examples of valid setbuttons commands:\n"
