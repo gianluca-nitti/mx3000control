@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
 	hid_free_enumeration(device_list);
 	hid_exit();
 	if (result == -1) {
-		fwprintf(stderr, L"No devices found.\n");
+		fwprintf(stderr, L"No devices found. Is the mouse plugged in? If yes, this may be a permissions problem (by default only the root user has write access to the HID device).\n");
 		result = 2;
 	}
 	return result;
