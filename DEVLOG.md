@@ -6,8 +6,8 @@ This software can be used to set the DPIs of the sensor, change the color and bl
 and to configure the buttons (the mouse has a total of 8 buttons, and each of them can be assigned a mouse function like right click/left click,
 a keyboard key, or a macro, which is a sequence of keyboard keys).
 
-For this device, there is no official Linux support from the manufacturer; you can use the mouse with a computer running Linux as a regular mouse
-- thanks to [this kernel module](https://github.com/torvalds/linux/blob/master/drivers/hid/hid-holtek-mouse.c#L27) (the comment mentions
+For this device, there is no official Linux support from the manufacturer; you can use the mouse with a computer running Linux as a regular mouse,
+thanks to [this kernel module](https://github.com/torvalds/linux/blob/master/drivers/hid/hid-holtek-mouse.c#L27) (the comment mentions
 Sharkoon Drakonia and Perixx MX-2000 mouse models, but according to `lsusb` the Perixx MX-3000 has Vendor ID 0x04D9 and Product ID 0xA067 as well),
 but you can't run the configuration program supplied by the manufacturer, so you can't customize the DPI/buttons/etc settings.
 All these settings are stored on a non-volatile flash memory on the mouse, so a possibility is to unplug the mouse every time you want to change the settings,
@@ -127,7 +127,7 @@ this DLL file needs to be put in place of the original one in the program's dire
 
 Reading [this very interesting article](https://www.codeproject.com/Articles/16541/Create-your-Proxy-DLLs-automatically) about proxy DLLs and using
 the attached tools has been a great help in achieving what I had in mind.
-Getting a working compiler on the Windows VM required to download the entire [Visual C++ Build Tools Packege](http://landinghub.visualstudio.com/visual-cpp-build-tools);
+Getting a working compiler on the Windows VM required to download the entire [Visual C++ Build Tools Package](http://landinghub.visualstudio.com/visual-cpp-build-tools);
 after installing it, I managed to compile the program attached to the article (the zip contains a single file, `wrappit.cpp`) and use it to generate the source
 of the proxy DLL. I then customized the implementation of `EncodeSecrecy_V11` to print the byte buffer to a string (in hexadecimal) and write it to a file.
 The source file of the proxy DLL is [`analysis-tools/hidapi.cpp`](https://github.com/gianluca-nitti/mx3000control/blob/master/analysis-tools/hidapi.cpp)
@@ -150,7 +150,7 @@ These are the steps I took to understand how to build the feature report which s
 
 * In the mouse configuration program, go to the *Color control* tab and select a color, then take note of it's RGB value
 (the software doesn't show the values, so I used [`grabc`](https://www.muquit.com/muquit/software/grabc/grabc.html)
-on the Linux host to grab the color shown in the software from the Virtualbox window); for example, the color I chose (orange) is #ff6b01
+on the Linux host to grab the color shown in the software from the VirtualBox window); for example, the color I chose (orange) is #ff6b01
 * At the Windows command prompt:
 ```
 C:\Users\test\Desktop>powershell ./record.ps1 E:\mouse-ff6b01
@@ -283,10 +283,12 @@ Windows software). It took me a while to understand how this worked: by setting 
 function in the usual way I could find some differences using `diff`, but by looking at the calls to `HidD_SetFeature` in *API Monitor*, I couldn't find any call which
 argument was the byte array obtained by applying the encoding function to the differing lines. Moreover, none of the arguments passed to the nine calls to `HidD_SetFeature`
 changed between two transactions with different button mappings; thus, the button configuration isn't sent to the mouse through HID feature reports but through some other channel.
+This is also the reason why, as I noticed during the first attempts, the number of calls to `EncodeSecrecy_V11` is higher than the number of calls to `HidD_SetFeature`
+during a configuration transaction: all the values which will be sent to the mouse are encoded, but only some of them are sent as feature reports.
 
 I had no idea about which other Windows library function calls the program was using, so I used *Wireshark* with the *usbmon* kernel module as explained
-[here](https://wiki.wireshark.org/CaptureSetup/USB) to sniff all the USB traffic. With `lsusb` I found the bus and device numbers (respectively 3 and 7 in this case
-so that I could set a filter in Wireshark  - by typing `usb.dst contains 3.7` in the "view filter" bar - to see only the packets sent to the mouse).
+[here](https://wiki.wireshark.org/CaptureSetup/USB) to sniff all the USB traffic. With `lsusb` I found the bus and device numbers (respectively 3 and 7 in this case)
+so that I could set a filter in Wireshark  - by typing `usb.dst contains 3.7` in the "view filter" bar - to see only the packets sent to the mouse.
 Here is a screenshot showing part of the capture of the Windows program setting the mouse to the default factory settings:
 
 ![Screenshot](https://i.imgur.com/79LGFEQ.png)
@@ -355,7 +357,7 @@ in [`default-macros.c`](https://github.com/gianluca-nitti/mx3000control/blob/mas
 The code which implements the button configuration feature is in [`commands/setbuttons.c`](https://github.com/gianluca-nitti/mx3000control/blob/master/commands/setbuttons.c).
 
 ### Macros
-As mentioned in the previous section, to reconfigure buttons the PC first sends a sequence of HID output reports to the mouse, then sends a fixed (independent of
+As mentioned in the previous section, to reconfigure buttons the PC first sends a sequence of HID output reports to the mouse, then sends a fixed (independent from
 user input) feature report - `00 07 05 01 00 06 00 00 00` encoded with the function described before - and finally a sequence of 176 output reports, which through
 the usual logging method, I noticed were changing when assigning different macros to the mouse buttons.
 
