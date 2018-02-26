@@ -7,7 +7,7 @@
 
 static const char* options[] = {"steady", "slow", "middle", "fast"};
 static const int n_options = 4;
-static const unsigned char command_byte = 0xB;
+static const unsigned char command_byte = 0x0B;
 static const char* setting_name = "led pulsation effect";
 
 static int execute(int argc, char** argv, hid_device* dev) {
