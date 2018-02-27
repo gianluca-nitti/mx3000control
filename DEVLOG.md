@@ -1,6 +1,6 @@
 ## Development of a Linux configuration software for a gaming mouse
 
-The Perixx MX-3000 is a computer mouse with some features that can be configured through a Windows sofware which comes with a CD in the mouse's box
+The Perixx MX-3000 is a computer mouse with some features that can be configured through a Windows software which comes with a CD in the mouse's box
 (alternatively, it can also be [downloaded from the Perixx website](http://perixx.eu/en/service/MX-3000-V1_2.zip)).
 This software can be used to set the DPIs of the sensor, change the color and blinking effect of the RGB LED on the mouse,
 and to configure the buttons (the mouse has a total of 8 buttons, and each of them can be assigned a mouse function like right click/left click,
@@ -321,8 +321,8 @@ behavior of the original program - an HID output report; with the HIDAPI library
 [`hid_write`](http://www.signal11.us/oss/hidapi/hidapi/doxygen/html/group__API.html#gad14ea48e440cf5066df87cc6488493af) function.
 
 After figuring out the transport channel, I still had to understand the relationship between those bytes and the button mappings configured in the application,
-but this was an easy task to accomplish with the usual `diff`-based method. There are, though, some relevent differences between the button configuration procedure
-and the previously implemented configuration commands: the button configuration consists of multiple output reports that must be sent in sequence, preceeded by
+but this was an easy task to accomplish with the usual `diff`-based method. There are, though, some relevant differences between the button configuration procedure
+and the previously implemented configuration commands: the button configuration consists of multiple output reports that must be sent in sequence, preceded by
 three "fixed" (meaning that they don't depend on user input) feature reports as "preamble" (I think they more or less tell the mouse firmware to start accepting
 the next output reports as button mapping data); you can't just remap a single button, you have to rewrite the entire configuration for all of them.
 Also, the button configuration sequence must be followed by the macro configuration sequence (see next section for more information), even if none of the buttons
@@ -386,7 +386,7 @@ sequence must be repeated when the button is pressed: up to 65535 times)
 	* The first byte of a pair has the following meaning:
 		* Most significant bit determines if the event to trigger is key down (0) or key up (1)
 		* The other 7 bits determine the delay between this and the next event; the range is 0 to 127 (since it's 7 bits), which maps to zero delay up to 6350ms,
-with each increment mapping to a 50ms delay increment; thus, the delays between macro entries can be choosen within multiples of 50ms in the 0-6350ms range
+with each increment mapping to a 50ms delay increment; thus, the delays between macro entries can be chosen within multiples of 50ms in the 0-6350ms range
 	* The second byte of each pair is the scancode of the keyboard key to emulate
 
 Finding this document made it very easy to figure out how to send macros to the mouse, because the format used by the Perixx MX-3000 is based on the one described
