@@ -1,4 +1,7 @@
-.PHONY: all clean
+.PHONY: all clean install uninstall
+
+PROGRAMNAME=mx3000control
+PREFIX?=/usr
 
 HIDAPI=hidapi-hidraw
 #HIDAPI=hidapi-libusb
@@ -8,13 +11,19 @@ LIBS=$(shell pkg-config --libs $(HIDAPI))
 
 COMMANDS=$(patsubst %.c, %.o, $(wildcard commands/*.c))
 
-all: mx3000control
+all: $(PROGRAMNAME)
 
-mx3000control: main.o encoding.o util.o keymap.o macro.o default_macros.o $(COMMANDS)
+$(PROGRAMNAME): main.o encoding.o util.o keymap.o macro.o default_macros.o $(COMMANDS)
 	$(CC) $^ $(LIBS) -o $@
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f *.o commands/*.o mx3000control
+	rm -f *.o commands/*.o $(PROGRAMNAME)
+
+install: $(PROGRAMNAME)
+	install -m 755 $< $(PREFIX)/bin/$<
+
+uninstall:
+	rm -f $(PREFIX)/bin/$(PROGRAMNAME)
