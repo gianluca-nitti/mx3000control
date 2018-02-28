@@ -23,7 +23,7 @@ clean:
 	rm -f *.o commands/*.o $(PROGRAMNAME)
 
 install: $(PROGRAMNAME)
-	install -m 755 $< $(PREFIX)/bin/$<
+	install -Dm 755 $< $(PREFIX)/bin/$<
 
 uninstall:
 	rm -f $(PREFIX)/bin/$(PROGRAMNAME)
