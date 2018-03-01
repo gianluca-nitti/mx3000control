@@ -15,6 +15,10 @@ they have the same VID:PID pair, but I can't guarantee compatibility. You can te
 there might be some chances to brick them (never happened during my tests with the MX-3000, though; when sending malformed commands, a power cycle always fixed everything). I take no responsibility for any damage you might cause
 to your devices.
 
+### Arch Linux package
+If you are using Arch Linux, you can install this program from the AUR. Tha package is [mx3000control-git](https://aur.archlinux.org/packages/mx3000control-git/).
+To use this program on a different distribution/system, see the Building section below.
+
 ### Development notes
 If you are interested in the process behind the development of this program, you may find [DEVLOG.md](https://github.com/gianluca-nitti/mx3000control/blob/master/DEVLOG.md) interesting.
 
